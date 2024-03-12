@@ -1,0 +1,19 @@
+.dollar-shower-wrapper {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 100000;
+  pointer-events: none;
+}
+
+.dollar-bill {
+  background-color: green;
+  border: 1px solid lightgreen;
+  color: lightgreen;
+  padding: 4px 12px;
+  font-size: 10px;
+  position: fixed;
+  box-shadow: 0px 5px 10px rgba(0, 0, 00, 0.25);
+}
