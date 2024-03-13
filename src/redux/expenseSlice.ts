@@ -15,6 +15,7 @@ type ExpenseSliceState = {
   isLoading: boolean;
   detailsDialog: boolean;
   editDetails: ExpenseDetails | null;
+  errMsg: string | undefined;
 };
 
 const initialState: ExpenseSliceState = {
@@ -23,12 +24,21 @@ const initialState: ExpenseSliceState = {
   isLoading: false,
   detailsDialog: false,
   editDetails: null,
+  errMsg: "",
 };
 
 type GetExpenseListPayload = {
   startAt?: string;
   endAt?: string;
 };
+
+export const removeMsg = createAsyncThunk("expense/removeMsg", async () => {
+  try {
+    await new Promise((r) => setTimeout(r, 5000));
+  } catch (error) {
+    return error;
+  }
+});
 
 export const getExpenseList = createAsyncThunk(
   "expense/list",
@@ -64,8 +74,9 @@ export const createExpense = createAsyncThunk(
       const { data } = await axios.post(incomeURL, values);
       thunkApi.dispatch(getExpenseList({}));
       return data;
-    } catch (error) {
-      return error;
+    } catch (error: any) {
+      thunkApi.dispatch(removeMsg());
+      throw new Error(error.response.data.message);
     }
   }
 );
@@ -144,8 +155,9 @@ const expenseSlice = createSlice({
         state.detailsDialog = false;
         state.isLoading = false;
       })
-      .addCase(createExpense.rejected, (state) => {
+      .addCase(createExpense.rejected, (state, { error }) => {
         state.isLoading = false;
+        state.errMsg = error.message;
       })
       .addCase(deleteExpense.fulfilled, (state) => {
         state.deleteDialog = false;
@@ -159,7 +171,10 @@ const expenseSlice = createSlice({
         state.isLoading = false;
         state.detailsDialog = false;
       })
-      .addCase(updateExpense.rejected, () => {});
+      .addCase(updateExpense.rejected, () => {})
+      .addCase(removeMsg.fulfilled, (state) => {
+        state.errMsg = "";
+      });
   },
 });
 

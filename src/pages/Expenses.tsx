@@ -84,8 +84,14 @@ const Expense = () => {
     },
   ];
 
-  const { isLoading, editDetails, detailsDialog, expenseList, deleteDialog } =
-    useSelector((store: RootState) => store.expense);
+  const {
+    isLoading,
+    editDetails,
+    errMsg,
+    detailsDialog,
+    expenseList,
+    deleteDialog,
+  } = useSelector((store: RootState) => store.expense);
   const { RangePicker } = DatePicker;
 
   useEffect(() => {
@@ -173,6 +179,7 @@ const Expense = () => {
           >
             <Input min={1} type="number" />
           </Form.Item>
+          <p style={{ color: "red" }}>{errMsg}</p>
           <Form.Item label="Date" name="spendAt" rules={[{ required: true }]}>
             <DatePicker />
           </Form.Item>
